@@ -38,6 +38,16 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: APP_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: APP_SECRET_KEY
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: API_KEY
         resources:
           requests:
             cpu: "100m"

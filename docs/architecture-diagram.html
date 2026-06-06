@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { font-family: Arial, sans-serif; background: #0f172a; color: #f1f5f9; padding: 40px; }
+h1 { text-align: center; color: #38bdf8; margin-bottom: 40px; }
+.flow { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.box { background: #1e293b; border: 2px solid #38bdf8; border-radius: 10px; padding: 15px 20px; text-align: center; min-width: 120px; }
+.box.green { border-color: #22c55e; }
+.box.purple { border-color: #a855f7; }
+.box.orange { border-color: #f59e0b; }
+.box.red { border-color: #ef4444; }
+.box small { display: block; color: #94a3b8; font-size: 11px; margin-top: 4px; }
+.arrow { font-size: 24px; color: #38bdf8; }
+.cluster { border: 2px dashed #475569; border-radius: 16px; padding: 20px; margin: 20px auto; max-width: 800px; }
+.cluster h3 { color: #94a3b8; margin: 0 0 15px; font-size: 13px; }
+.row { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
+</style>
+</head>
+<body>
+<h1>Intelligent Self-Healing Deployment Platform</h1>
+
+<div class="flow">
+  <div class="box"><b>Developer</b><small>Push code</small></div>
+  <div class="arrow">→</div>
+  <div class="box"><b>GitHub</b><small>Source control</small></div>
+  <div class="arrow">→</div>
+  <div class="box purple"><b>GitHub Actions</b><small>CI/CD Pipeline</small></div>
+  <div class="arrow">→</div>
+  <div class="box orange"><b>Docker Hub</b><small>Image registry</small></div>
+</div>
+
+<div class="arrow" style="text-align:center;display:block;font-size:30px;">↓</div>
+
+<div class="cluster">
+  <h3>MINIKUBE CLUSTER (Local Kubernetes)</h3>
+
+  <div class="row">
+    <div class="box green"><b>Flask Backend</b><small>2 replicas</small></div>
+    <div class="box green"><b>React Frontend</b><small>Live dashboard</small></div>
+    <div class="box green"><b>HPA Autoscaler</b><small>min2 max8</small></div>
+    <div class="box green"><b>Ingress</b><small>Traffic routing</small></div>
+  </div>
+
+  <div class="row">
+    <div class="box red"><b>Prometheus</b><small>Metrics collection</small></div>
+    <div class="box red"><b>Grafana</b><small>Dashboards</small></div>
+    <div class="box red"><b>Alertmanager</b><small>Slack alerts</small></div>
+  </div>
+
+  <div class="row">
+    <div class="box"><b>ConfigMap</b><small>App config</small></div>
+    <div class="box"><b>Secret</b><small>Credentials</small></div>
+    <div class="box"><b>NetworkPolicy</b><small>VPC simulation</small></div>
+    <div class="box"><b>Terraform</b><small>Provisioning</small></div>
+  </div>
+</div>
+
+<div class="arrow" style="text-align:center;display:block;font-size:30px;">↓</div>
+
+<div class="flow">
+  <div class="box purple"><b>Slack Alerts</b><small>Notifications</small></div>
+  <div class="box green"><b>Self-Healing</b><small>Auto restart</small></div>
+  <div class="box orange"><b>Auto Rollback</b><small>On failure</small></div>
+</div>
+
+</body>
+</html>
