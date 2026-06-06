@@ -146,6 +146,17 @@ resource "kubernetes_namespace" "staging" {
   }
 }
 
+resource "kubernetes_namespace" "production" {
+  metadata {
+    name = "production"
+    labels = {
+      project     = var.project_name
+      managed-by  = "terraform"
+      environment = "production"
+    }
+  }
+}
+
 # ─── ConfigMap ───────────────────────────────────────────────────────────────
 
 resource "kubernetes_config_map" "app_config" {
