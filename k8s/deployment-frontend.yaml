@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: self-healing-frontend
+  namespace: self-healing-app
+  annotations:
+    kubernetes.io/change-cause: "Initial deployment v1"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: self-healing-frontend
+  template:
+    metadata:
+      labels:
+        app: self-healing-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: vineetkumar11/self-healing-frontend:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "200m"
+            memory: "128Mi"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5

@@ -1,0 +1,46 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: self-healing-rules
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+  - name: self-healing
+    rules:
+    - alert: PodCrashLooping
+      expr: rate(kube_pod_container_status_restarts_total{namespace="self-healing-app"}[15m]) > 0
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Pod crash-looping"
+        description: "Pod {{ $labels.pod }} is restarting frequently"
+
+    - alert: HighErrorRate
+      expr: rate(app_requests_total{status="500",namespace="self-healing-app"}[5m]) > 0.05
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "High backend error rate"
+        description: "Error rate is above 5% in namespace self-healing-app"
+
+    - alert: HighCPU
+      expr: container_cpu_usage_seconds_total{namespace="self-healing-app"} > 0.4
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High CPU usage"
+        description: "Container {{ $labels.container }} CPU above 40%"
+
+    - alert: DeploymentUnavailable
+      expr: kube_deployment_status_replicas_unavailable{namespace="self-healing-app"} > 0
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Deployment has unavailable replicas"
+        description: "{{ $labels.deployment }} has {{ $value }} unavailable replicas — rollback may be needed"
