@@ -20,7 +20,7 @@ stringData:
     receivers:
     - name: 'slack-alerts'
       slack_configs:
-      - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+      - api_url: 'https://hooks.slack.com/services/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'
         channel: '#k8s-alerts'
         title: 'Alert: {{ .GroupLabels.alertname }}'
         text: |
