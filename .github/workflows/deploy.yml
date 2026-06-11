@@ -70,14 +70,24 @@ jobs:
 
     - name: Notify Slack on success
       if: success()
-      run: |
-        curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"Build SUCCESS: self-healing-platform commit ${{ github.sha }} by ${{ github.actor }}\"}" \
-          ${{ secrets.SLACK_WEBHOOK_URL }} || true
+      uses: slackapi/slack-github-action@v1.26.0
+      with:
+        payload: |
+          {
+            "text": "Build SUCCESS: self-healing-platform by ${{ github.actor }} on commit ${{ github.sha }}"
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
     - name: Notify Slack on failure
       if: failure()
-      run: |
-        curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"Build FAILED: self-healing-platform commit ${{ github.sha }} by ${{ github.actor }}\"}" \
-          ${{ secrets.SLACK_WEBHOOK_URL }} || true
+      uses: slackapi/slack-github-action@v1.26.0
+      with:
+        payload: |
+          {
+            "text": "Build FAILED: self-healing-platform by ${{ github.actor }} on commit ${{ github.sha }}"
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
