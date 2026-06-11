@@ -1,4 +1,5 @@
-﻿name: CI/CD Pipeline
+﻿@"
+name: CI/CD Pipeline
 
 on:
   push:
@@ -36,8 +37,8 @@ jobs:
     - name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        username: `${{ secrets.DOCKERHUB_USERNAME }}
+        password: `${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Build and push backend
       uses: docker/build-push-action@v5
@@ -45,8 +46,8 @@ jobs:
         context: ./app
         push: true
         tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/self-healing-backend:latest
-          ${{ secrets.DOCKERHUB_USERNAME }}/self-healing-backend:${{ github.sha }}
+          `${{ secrets.DOCKERHUB_USERNAME }}/self-healing-backend:latest
+          `${{ secrets.DOCKERHUB_USERNAME }}/self-healing-backend:`${{ github.sha }}
 
     - name: Build and push frontend
       uses: docker/build-push-action@v5
@@ -54,40 +55,35 @@ jobs:
         context: ./frontend
         push: true
         tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/self-healing-frontend:latest
-          ${{ secrets.DOCKERHUB_USERNAME }}/self-healing-frontend:${{ github.sha }}
+          `${{ secrets.DOCKERHUB_USERNAME }}/self-healing-frontend:latest
+          `${{ secrets.DOCKERHUB_USERNAME }}/self-healing-frontend:`${{ github.sha }}
 
     - name: Update deployment manifests
       run: |
-        sed -i "s|YOUR_DOCKERHUB_USERNAME|${{ secrets.DOCKERHUB_USERNAME }}|g" k8s/deployment-backend.yaml
-        sed -i "s|YOUR_DOCKERHUB_USERNAME|${{ secrets.DOCKERHUB_USERNAME }}|g" k8s/deployment-frontend.yaml
+        sed -i "s|YOUR_DOCKERHUB_USERNAME|`${{ secrets.DOCKERHUB_USERNAME }}|g" k8s/deployment-backend.yaml
+        sed -i "s|YOUR_DOCKERHUB_USERNAME|`${{ secrets.DOCKERHUB_USERNAME }}|g" k8s/deployment-frontend.yaml
 
     - name: Archive manifests as artifact
       uses: actions/upload-artifact@v4
       with:
-        name: k8s-manifests-${{ github.sha }}
+        name: k8s-manifests-`${{ github.sha }}
         path: k8s/
 
     - name: Notify Slack on success
       if: success()
-      uses: slackapi/slack-github-action@v1.26.0
-      with:
-        payload: |
-          {
-            "text": "Build SUCCESS: self-healing-platform by ${{ github.actor }} on commit ${{ github.sha }}"
-          }
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+      run: |
+        curl -s -o /dev/null -w "%{http_code}" \
+          -X POST \
+          -H "Content-type: application/json" \
+          -d "{\"text\":\"Build SUCCESS: self-healing-platform by `${{ github.actor }} - commit `${{ github.sha }}\"}" \
+          `${{ secrets.SLACK_WEBHOOK_URL }}
 
     - name: Notify Slack on failure
       if: failure()
-      uses: slackapi/slack-github-action@v1.26.0
-      with:
-        payload: |
-          {
-            "text": "Build FAILED: self-healing-platform by ${{ github.actor }} on commit ${{ github.sha }}"
-          }
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+      run: |
+        curl -s -o /dev/null -w "%{http_code}" \
+          -X POST \
+          -H "Content-type: application/json" \
+          -d "{\"text\":\"Build FAILED: self-healing-platform by `${{ github.actor }} - commit `${{ github.sha }}\"}" \
+          `${{ secrets.SLACK_WEBHOOK_URL }}
+"@ | Out-File -FilePath .github\workflows\deploy.yml -Encoding utf8
