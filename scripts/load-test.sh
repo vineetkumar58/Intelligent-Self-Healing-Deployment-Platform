@@ -1,4 +1,3 @@
-@"
 #!/bin/bash
 NAMESPACE="self-healing-app"
 DEPLOYMENT="self-healing-backend"
@@ -16,7 +15,7 @@ kubectl get hpa -n $NAMESPACE
 sleep 3
 
 echo ""
-echo "STEP 2: Starting load test (60 seconds)"
+echo "STEP 2: Starting load test - 60 seconds"
 echo "------------------------------"
 echo "Sending requests to backend..."
 
@@ -41,7 +40,7 @@ kubectl get hpa -n $NAMESPACE
 kubectl get pods -n $NAMESPACE
 
 echo ""
-echo "STEP 4: Waiting for scale down (2 minutes)"
+echo "STEP 4: Waiting for scale down - 2 minutes"
 echo "------------------------------"
 echo "Load stopped - watching scale down..."
 sleep 120
@@ -52,4 +51,3 @@ echo ""
 echo "======================================"
 echo "  LOAD TEST COMPLETE"
 echo "======================================"
-"@ | Out-File -FilePath scripts\load-test.sh -Encoding utf8

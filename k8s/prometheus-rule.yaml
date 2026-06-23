@@ -35,7 +35,25 @@ spec:
       annotations:
         summary: "High CPU usage"
         description: "Container {{ $labels.container }} CPU above 40%"
-
+    
+    - alert: HighMemoryUsage
+      expr: container_memory_usage_bytes{namespace="self-healing-app"} / container_spec_memory_limit_bytes{namespace="self-healing-app"} > 0.7
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High memory usage"
+        description: "Container {{ $labels.container }} memory usage above 70%"
+    
+    - alert: UnauthorizedAccessAttempt
+      expr: increase(apiserver_audit_event_total{verb="create",objectRef_resource="secrets"}[5m]) > 5
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Unusual secret access pattern detected"
+        description: "Multiple secret access attempts detected in self-healing-app namespace - possible security event"
+        
     - alert: DeploymentUnavailable
       expr: kube_deployment_status_replicas_unavailable{namespace="self-healing-app"} > 0
       for: 2m
