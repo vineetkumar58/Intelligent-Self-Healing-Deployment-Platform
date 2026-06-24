@@ -30,65 +30,85 @@ A production-grade DevOps platform that automatically deploys, monitors, detects
 
 ## Quick Start
 
-1. Start Minikube
+### 1. Start Minikube
 
+```bash
 minikube start --cpus=4 --memory=6144 --driver=docker
 minikube addons enable ingress
 minikube addons enable metrics-server
+```
 
-2. Provision infrastructure with Terraform
+### 2. Provision infrastructure with Terraform
 
+```bash
 cd terraform
 terraform init
 terraform apply -auto-approve
 cd ..
+```
 
-3. Deploy the application
+### 3. Deploy the application
 
+```bash
 kubectl apply -f k8s/
 kubectl apply -f monitoring/
+```
 
-4. Wait for pods to be ready
+### 4. Wait for pods to be ready
 
+```bash
 kubectl get pods -n self-healing-app
+```
 
-All pods should show 1/1 Running.
+All pods should show `1/1 Running`.
 
-5. Access the dashboard
+### 5. Access the dashboard
 
+```bash
 minikube service self-healing-frontend-svc -n self-healing-app
+```
 
-6. Access Grafana
+### 6. Access Grafana
 
+```bash
 kubectl port-forward svc/monitoring-grafana 3000:80 -n monitoring
+```
 
-Open http://localhost:3000 - username: admin password: admin123
+Open `http://localhost:3000` - username: `admin` password: `admin123`
 
-7. Run self-healing demo
+### 7. Run self-healing demo
 
+```bash
 bash scripts/demo-self-heal.sh
+```
 
-This script deletes a pod to prove auto-recovery, deploys a bad image to prove auto-rollback, and shows HPA status. Or click Inject failure on the dashboard for a manual demo.
+This script deletes a pod to prove auto-recovery, deploys a bad image to prove auto-rollback, and shows HPA status. Or click **Inject failure** on the dashboard for a manual demo.
 
-8. Run HPA auto-scaling load test
+### 8. Run HPA auto-scaling load test
 
+```bash
 bash scripts/load-test.sh
+```
 
-9. Run health check or log aggregation anytime
+### 9. Run health check or log aggregation anytime
 
+```bash
 bash scripts/health-check.sh
 bash scripts/log-aggregation.sh
+```
 
 ## Project Structure
 
-app/ - Flask backend
-frontend/ - React monitoring dashboard
-terraform/ - Infrastructure as Code
-k8s/ - Kubernetes manifests
-monitoring/ - Prometheus, Grafana and Alertmanager config
-scripts/ - Self-healing, rollback, load test and log aggregation scripts
-docs/ - Architecture, guides and procedures
-.github/workflows/ - CI/CD pipeline
+```
+app/                  Flask backend
+frontend/             React monitoring dashboard
+terraform/            Infrastructure as Code
+k8s/                  Kubernetes manifests
+monitoring/           Prometheus, Grafana and Alertmanager config
+scripts/              Self-healing, rollback, load test and log aggregation scripts
+docs/                 Architecture, guides and procedures
+.github/workflows/    CI/CD pipeline
+```
 
 ## Documentation
 
@@ -114,7 +134,8 @@ docs/ - Architecture, guides and procedures
 
 ## Features
 
-Phase 1 - Deployment Infrastructure
+### Phase 1 - Deployment Infrastructure
+
 - Terraform provisions namespaces, network policies, and monitoring stack
 - Docker images built and pushed via GitHub Actions CI/CD
 - Kubernetes deployments with rolling updates
@@ -122,7 +143,8 @@ Phase 1 - Deployment Infrastructure
 - Prometheus metrics collection from Flask backend
 - Grafana dashboards with real-time cluster monitoring
 
-Phase 2 - Self-Healing Automation
+### Phase 2 - Self-Healing Automation
+
 - Automatic pod restart on health check failure - proven live
 - HPA auto-scaling based on CPU and memory - proven live, scales 2 to 8 replicas
 - Automated rollback on deployment failure - proven live
@@ -133,7 +155,8 @@ Phase 2 - Self-Healing Automation
 
 ## CI/CD Pipeline
 
-Every push to main branch triggers:
+Every push to `main` branch triggers:
+
 1. Python dependency install and import test
 2. Docker image build for backend and frontend
 3. Push to Docker Hub with commit SHA tag
@@ -141,15 +164,15 @@ Every push to main branch triggers:
 
 ## Docker Images
 
-- vineetkumar11/self-healing-backend:latest
-- vineetkumar11/self-healing-frontend:latest
+- `vineetkumar11/self-healing-backend:latest`
+- `vineetkumar11/self-healing-frontend:latest`
 
 ## Monitoring Endpoints
 
 | Endpoint | Description |
 |----------|-------------|
-| / | Application status |
-| /health | Health check |
-| /metrics | Prometheus metrics |
-| /api/status | Detailed status |
-| /simulate-error | Inject failure for demo |
+| `/` | Application status |
+| `/health` | Health check |
+| `/metrics` | Prometheus metrics |
+| `/api/status` | Detailed status |
+| `/simulate-error` | Inject failure for demo |
